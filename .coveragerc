@@ -1,0 +1,10 @@
+[run]
+branch=True
+include=test/*
+omit=
+  *__init__.py
+  *[iu]_*.py
+
+[report]
+show_missing=True
+skip_covered=True
