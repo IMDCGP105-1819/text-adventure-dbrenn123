@@ -1,6 +1,6 @@
 [run]
 branch=True
-include=test/*
+include=lib/*
 omit=
   *__init__.py
   *[iu]_*.py
