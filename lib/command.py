@@ -5,9 +5,9 @@ def parse(cmd):
 		cmd : string
 			Space sperated string tokens.
 
-	Return {action, object}
+	Return {action, target}
 	'''
 
-	action, object = cmd.upper().rsplit(' ', 1)
+	action, target = cmd.upper().rsplit(' ', 1)
 
-	return {"action": action, "object": object}
+	return {"action": action, "target": target}
