@@ -8,6 +8,6 @@ def parse(cmd):
 	Return {action, object}
 	'''
 
-	action, object = cmd.rsplit(' ', 1)
+	action, object = cmd.upper().rsplit(' ', 1)
 
 	return {"action": action, "object": object}
