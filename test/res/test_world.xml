@@ -1,22 +1,22 @@
 <document>
-	<stage id="0" name="test_00">
+	<stage id="0" name="test_00" description="">
 		<join>
 			<north>1</north>
 		</join>
 	</stage>
-	<stage id="1" name="test_01">
+	<stage id="1" name="test_01" description="">
 		<join>
 			<south>0</south>
 		</join>
 	</stage>
-	<stage id="2" name="test_02">
+	<stage id="2" name="test_02" description="test_description">
 		<join>
-			<door>3</door>
+			<door description="">3</door>
 		</join>
 	</stage>
-	<stage id="3" name="test_03">
+	<stage id="3" name="test_03" description="">
 		<join>
-			<door>2</door>
+			<door description="">2</door>
 		</join>
 	</stage>
 </document>

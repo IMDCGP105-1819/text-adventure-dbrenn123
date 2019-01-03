@@ -9,5 +9,6 @@ def _get_document():
 def load_stage(id):
 	elem = _get_document().find(f"stage[@id='{id}']")
 	name = elem.attrib['name']
+	description = elem.attrib['description']
 
-	return Stage(name)
+	return Stage(name, description)
