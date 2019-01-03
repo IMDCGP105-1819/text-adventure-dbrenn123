@@ -1,18 +1,13 @@
-class World:
-	__instance = None
+'''This module provides an interface for importing game locations from data file.'''
 
-	@classmethod
-	def getInstance(cls):
-		if cls.__instance == None:
-			cls()
+from xml.etree import ElementTree
+from lib.stage import Stage
 
-		return cls.__instance
+def _get_document():
+	return ElementTree.parse('res/world.xml').getroot()
 
-	def __init__(self):
-		if self.__class__.__instance != None:
-			raise Exception(f"Class {repr(self)} can only be instantiated once")
-		else:
-			self.__class__.__instance = self
+def load_stage(id):
+	elem = _get_document().find(f"stage[@id='{id}']")
+	name = elem.attrib['name']
 
-	def __repr__(self):
-		return f"<{self.__class__.__name__}()>"
+	return Stage(name)

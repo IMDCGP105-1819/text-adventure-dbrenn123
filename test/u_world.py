@@ -1,24 +1,11 @@
+import mock
 import pytest
-from lib.world import World
+from xml.etree import ElementTree
 
-@pytest.fixture(autouse=True)
-def drop_instance():
-    World._World__instance = None
+import lib.world as world
 
 class TestClass:
-	def t_repr(self):
-		assert repr(World()) == "<World()>"
-
-class TestInstance:
-	def t_inst_exception(self):
-		World()
-		try:
-			World()
-			assert False, f"{repr(World.getInstance())} was instantiated twice"
-		except AssertionError as e:
-			raise e
-		except Exception as e:
-			pass
-
-	def t_get_inst(self):
-		assert World.getInstance() is World.getInstance()
+	@mock.patch('lib.world._get_document', return_value=ElementTree.parse('test/res/test_world.xml').getroot())
+	def t_load_stage(self, mock):
+		assert world.load_stage(0).name == "test_00"
+		assert world.load_stage(1).name == "test_01"
