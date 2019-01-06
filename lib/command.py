@@ -1,38 +1,66 @@
-def execute_command(cmd):
-	cmd = _parse(cmd)
-	target = _get_target(cmd['target'])
+import lib.player as player
 
-	if(target == None):
-		return _invalid_target(cmd)
+ACTIONS = ["GO", "LOOK", "EXAMINE", "USE", "COMBINE"]
+PREPOSITIONS = ["TO", "AT", "AROUND", "IN", "WITHIN", "WITH", "ON", "UNDER"]
+ARTICLES = ["THE"]
 
-	action = _get_action(cmd['action'], target)
+class _InvalidCommandError(Exception):
+	"""Raise when input command does not meet requirements"""
+	pass
 
-	if(action == None):
-		return _invalid_action(cmd)
+class _MissingActionError(_InvalidCommandError):
+	"""Raise when initial command token is not a valid action"""
+	pass
 
-def _parse(cmd):
-	'''Parses command string into action and target game-object
+class _TargetActionMismatchError(_InvalidCommandError):
+	"""Raise when action is not applicable to target object"""
+	pass
 
-	Params
-		cmd : string
-			Space sperated string tokens.
+def execute(input):
+	try:
+		_parse(*_tokenize(input))()
+	except _MissingActionError:
+		print("##Missing action")
+	except _TargetActionMismatchError:
+		print("##That object cannot do that")
+	except _InvalidCommandError:
+		print("##Invalid command")
+	except Exception as e:
+		raise e
 
-	Return {action, target}
-	'''
+def _tokenize(string):
+	tokens = []
 
-	action, target = cmd.upper().rsplit(' ', 1)
+	for s in string.split():
+		s = s.upper()
 
-	return {"action": action, "target": target}
+		if s in ACTIONS:
+			tokens.append({'type': "ACTION", 'value': s})
+		elif s in PREPOSITIONS:
+			tokens.append({'type': "PREPOS", 'value': s})
+		elif s in ARTICLES:
+			tokens.append({'type': "ARTICLE", 'value': s})
+		else:
+			tokens.append({'type': "TARGET", 'value': s})
 
-def _get_target(name):
-	NotImplemented
+	return tokens
 
-def _invalid_target(cmd):
-	print(f"There is no {cmd['target']}")
+def _parse(*tokens):
+	action = None
+	targets = []
 
-	return False
+	if(tokens[0]['type'] != "ACTION"):
+		raise _MissingActionError()
 
-def _invalid_action(cmd):
-	print(f"Cannot {cmd['action']} {cmd['target']}")
+	for t in tokens:
+		if(t['type'] == "ACTION"):
+			action = t['value']
+		elif(t['type'] == "TARGET"):
+			targets.append(t['value'])
 
-	return False
+	if(len(targets) == 0):
+		# Check for player action
+		if(action == "LOOK"):
+			return player.get_current_stage().examine
+
+	raise _InvalidCommandError()
