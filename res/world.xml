@@ -1,0 +1,18 @@
+<document>
+	<stage id="0" name="Stage 1" description="This is a description">
+		<join>
+			<north id="1"></north>
+		</join>
+		<content>
+			<generic name="Test_01" description="desc"></generic>
+		</content>
+	</stage>
+	<stage id="1" name="Stage 2" description="This is a description">
+		<join>
+			<south id="0"></south>
+		</join>
+		<content>
+			<generic name="Test_02" description="desc"></generic>
+		</content>
+	</stage>
+</document>
