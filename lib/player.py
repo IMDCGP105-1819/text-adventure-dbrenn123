@@ -1,28 +1,23 @@
-from lib.world import World
+"""This module manages the game-state of the player."""
 
-class Player:
-	def __init__(self):
-		self._location = None
+import lib.world as world
 
-	def __repr__(self):
-		return f"<{self.__class__.__name__}()>"
+_current_stage = None
+_inventory = []
 
-	@property
-	def location(self):
-		'''Get the current location of the player
+def init(stage_id):
+	"""Initialize player module
 
-		Returns <Room()>
-		'''
+		Params:
+			stage_id: int - ID of starting stage
+	"""
 
-		return self._location
+	set_stage(stage_id)
 
-	@location.setter
-	def location(self, room_id):
-		'''Set the current location of the player
+def get_current_stage():
+	return _current_stage
 
-		Params
-			room_id : int
-				ID used to load room object from data file.
-		'''
+def set_stage(id):
+	global _current_stage
 
-		self._location = World.load_room(room_id)
+	_current_stage = world.load_stage(id)
