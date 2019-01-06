@@ -3,20 +3,33 @@
 		<join>
 			<north>1</north>
 		</join>
+		<content>
+			<generic name="obj_01" description="desc"></generic>
+		</content>
 	</stage>
 	<stage id="1" name="test_01" description="">
 		<join>
 			<south>0</south>
 		</join>
+		<content>
+			<generic name="obj_02" description="desc"></generic>
+		</content>
 	</stage>
 	<stage id="2" name="test_02" description="test_description">
 		<join>
 			<door description="">3</door>
 		</join>
+		<content>
+			<generic name="obj_03" description="desc"></generic>
+		</content>
 	</stage>
 	<stage id="3" name="test_03" description="">
 		<join>
 			<door description="">2</door>
 		</join>
+		<content>
+			<generic name="obj_04" description="desc"></generic>
+			<generic name="obj_05" description="desc"></generic>
+		</content>
 	</stage>
 </document>
