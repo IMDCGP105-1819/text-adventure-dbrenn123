@@ -25,6 +25,6 @@ class GameObject:
 		return self._description
 
 	def examine(self):
-		""" Print description of object """
+		""" Perform examine action and get response string """
 
-		print(self.description)
+		return self.description

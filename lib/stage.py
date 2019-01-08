@@ -46,9 +46,12 @@ class Stage(GameObject):
 		return False
 
 	def examine(self):
-		""" Print stage info and interactable item names. """
+		""" Perform examine action and get response string """
 
-		print(f"You look around the {self.name}.")
-		super().examine()
-		print(f"You see the following items...")
-		print("\n".join([str(item) for item in self.items_list]))
+		NEW_LINE = "\n"
+
+		# Return description of stage followed by list of interactable items.
+		return f'''You look around the {self.name}.
+				{super().examine()}
+				You see the following items...
+				{NEW_LINE.join([str(item) for item in self.items_list])}'''

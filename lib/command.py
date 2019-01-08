@@ -1,9 +1,10 @@
-""" This module handles player input command parsing and execution.
+""" This module handles player input command parsing.
 
 TODO:
 	- Implement navigation commands
 	- Implement item use/collection/interaction commands
 	- More helpful InvalidCommandError messages
+	- Move response stage to game cycle file
 """
 
 import lib.player as player
@@ -12,41 +13,29 @@ ACTIONS = ["GO", "LOOK", "EXAMINE", "USE", "COMBINE"]
 PREPOSITIONS = ["TO", "AT", "AROUND", "IN", "WITHIN", "WITH", "ON", "UNDER"]
 ARTICLES = ["THE"]
 
-class _InvalidCommandError(Exception):
+class InvalidCommandError(Exception):
 	""" Raise when input command does not meet requirements. """
 	pass
 
-class _MissingActionError(_InvalidCommandError):
+class MissingActionError(InvalidCommandError):
 	""" Raise when initial command token is not a valid action. """
 	pass
 
-class _TargetActionMismatchError(_InvalidCommandError):
+class TargetActionMismatchError(InvalidCommandError):
 	""" Raise when action is not applicable to target object. """
 	pass
 
-def execute(input):
-	""" Parse and execute input.
-
-	After a command has been executed, a response will be printed informing the
-	player of the results. If an invalid command is attempted, a message will be
-	printed explaining the error.
+def parse(input):
+	""" Parse input and return function.
 
 	Parameters
 		input (string):
 			Player input command.
+
+	Return (function)
 	"""
 
-	try:
-		# Parse tokenized input and execute.
-		_parse(*_tokenize(input))()
-	except _MissingActionError:
-		print("##Missing action")
-	except _TargetActionMismatchError:
-		print("##That object cannot do that")
-	except _InvalidCommandError:
-		print("##Invalid command")
-	except Exception as e:
-		raise e
+	return _parse(*_tokenize(input))
 
 def _tokenize(string):
 	""" Split string into token list. """
@@ -78,7 +67,7 @@ def _parse(*tokens):
 	targets = []
 
 	if(tokens[0]['type'] != "ACTION"):
-		raise _MissingActionError()
+		raise MissingActionError()
 
 	for t in tokens:
 		if(t['type'] == "ACTION"):
@@ -91,4 +80,4 @@ def _parse(*tokens):
 		if action in ["LOOK", "EXAMINE"]:
 			return player.get_current_stage().examine
 
-	raise _InvalidCommandError()
+	raise InvalidCommandError()
