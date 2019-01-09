@@ -1,5 +1,6 @@
 <?xml version = "1.0" encoding = "UTF-8"?>
 <!-- Data file containg game stage and item data -->
+<!-- TODO - Add data validation on start or as seperate program -->
 <document>
 	<stage id="0" name="Stage 1" description="This is a description">
 		<join>
@@ -11,10 +12,18 @@
 	</stage>
 	<stage id="1" name="Stage 2" description="This is a description">
 		<join>
+			<door id="2" description="Leads to stage 3" key_id="123"></door>
 			<south id="0"></south>
 		</join>
 		<content>
 			<generic name="Test_02" description="desc"></generic>
+		</content>
+	</stage>
+	<stage id="2" name="Test_03" description="Descript3">
+		<join>
+			<door id="1" description="Leads back to stage 2"></door>
+		</join>
+		<content>
 		</content>
 	</stage>
 </document>

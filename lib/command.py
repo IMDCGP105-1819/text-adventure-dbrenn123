@@ -3,8 +3,7 @@
 TODO:
 	- Implement navigation commands
 	- Implement item use/collection/interaction commands
-	- More helpful InvalidCommandError messages
-	- Move response stage to game cycle file
+	- Refactor _parse()
 """
 
 import lib.player as player
@@ -21,12 +20,16 @@ class MissingActionError(InvalidCommandError):
 	""" Raise when initial command token is not a valid action. """
 	pass
 
+class InvalidTargetError(InvalidCommandError):
+	""" Raise when target item cannot be found """
+	pass
+
 class TargetActionMismatchError(InvalidCommandError):
 	""" Raise when action is not applicable to target object. """
 	pass
 
 def parse(input):
-	""" Parse input and return function.
+	""" Parse input and return callback function.
 
 	Parameters
 		input (string):
@@ -63,6 +66,7 @@ def _parse(*tokens):
 		tokens (list[ dict{ str:str, str:str } ]):
 			List of tokenized command strings.
 	"""
+
 	action = None
 	targets = []
 
@@ -76,8 +80,22 @@ def _parse(*tokens):
 			targets.append(t['value'])
 
 	if(len(targets) == 0):
-		# Check for player action
+		# Validate player action
 		if action in ["LOOK", "EXAMINE"]:
 			return player.get_current_stage().examine
+		else:
+			raise TargetActionMismatchError()
+	else:
+		# Validate target item
+		for target in targets:
+			if(target not in player.get_current_stage().items_list):
+				if(action in ["LOOK", "EXAMINE"]):
+					return player.get_current_stage().get_item(target).examine
+				elif action in ["USE","OPEN"]:
+					return player.get_current_stage().get_item(target).use
+				else:
+					raise TargetActionMismatchError()
+			else:
+				raise InvalidTargetError()
 
 	raise InvalidCommandError()
