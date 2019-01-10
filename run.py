@@ -35,6 +35,8 @@ while(True):
 			print(re.sub("\t", "", response))
 		except command.MissingActionError:
 			print("##Missing action")
+		except command.ActionConflictError:
+			print("##Too many actions")
 		except command.TargetActionMismatchError:
 			print("##That item cannot do that")
 		except command.InvalidCommandError:
