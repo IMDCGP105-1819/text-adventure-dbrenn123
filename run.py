@@ -16,7 +16,7 @@ class _InvalidResponseError(Exception):
 	pass
 
 def start():
-	player.init(1)
+	player.init(0)
 
 start()
 
@@ -32,15 +32,17 @@ while(True):
 			callback = command.parse(CMD)
 			response = callback()
 
-			print(re.sub("\t", "", response))
+			print('\n' + re.sub("\t", "", response))
 		except command.MissingActionError:
-			print("##Missing action")
+			print("[!] Missing action.")
 		except command.ActionConflictError:
-			print("##Too many actions")
+			print("[!] Too many actions.")
+		except command.InvalidDirectionError:
+			print("[!] There is nothing that way.")
 		except command.TargetActionMismatchError:
-			print("##That item cannot do that")
+			print("[!] You cannot do that with that item.")
 		except command.InvalidCommandError:
-			print("##Invalid command")
+			print("[!] Invalid command")
 		except TypeError:
 			raise _InvalidResponseError(f"Invalid response from {callback}. Expected type string. Got type {type(response)}")
 		except Exception as e:

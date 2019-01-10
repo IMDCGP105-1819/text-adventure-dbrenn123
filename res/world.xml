@@ -1,27 +1,55 @@
 <?xml version = "1.0" encoding = "UTF-8"?>
 <!-- Data file containg game stage and item data -->
 <!-- TODO - Add data validation on start or as seperate program -->
+<!-- Structure
+	Stage
+		<stage id={int} name={string} description={string}
+			<join> {<join-object>...} </join>
+			<content> {<item-object>...} </content>
+		</stage>
+	Join Objects - Link stages together.
+		<north|east|south|west dest_id={int}></{direction}> # Destination stage must have corrosponding join-object.
+		<door dest_id={int} description={string} [key_id={int}]></door> # If key_id present, key object will need to be in inventory to use door.
+	Game Items - Items to be interacted with and collected.
+		<item name={string} description={string}> {<item>...} </item> # Items can be nested.
+-->
 <document>
-	<stage id="0" name="Stage 1" description="This is a description">
+	<stage id="0" name="atrium" description="There is nothing out of the ordinary.">
 		<join>
-			<north id="1"></north>
+			<north dest_id="1"></north>
 		</join>
 		<content>
-			<generic name="Test_01" description="desc"></generic>
+			<item id="0" name="lamp" description="It is a nice lamp."></item>
 		</content>
 	</stage>
-	<stage id="1" name="Stage 2" description="This is a description">
+	<stage id="1" name="hallway" description="It is a spooky hallway. There is something out of the ordinary.">
 		<join>
-			<door id="2" description="Leads to stage 3" key_id="123"></door>
-			<south id="0"></south>
+			<door dest_id="2" description="It is a heavy looking wooden door." key_id="123"></door>
+			<south dest_id="0"></south>
 		</join>
 		<content>
-			<generic name="Test_02" description="desc"></generic>
+			<item id="1" name="painting" description="It is too dark to see."></item>
 		</content>
 	</stage>
-	<stage id="2" name="Test_03" description="Descript3">
+	<stage id="2" name="basement" description="">
 		<join>
-			<door id="1" description="Leads back to stage 2"></door>
+			<door dest_id="1" description=""></door>
+			<door dest_id="3" description=""></door>
+		</join>
+		<content>
+		</content>
+	</stage>
+	<stage id="3" name="passage" description="secret">
+		<join>
+			<door dest_id="2"></door>
+			<west dest_id="4"></west>
+		</join>
+		<content>
+		</content>
+	</stage>
+	<stage id="4" name="outside" description="">
+		<join>
+			<east dest_id="3"></east>
 		</join>
 		<content>
 		</content>

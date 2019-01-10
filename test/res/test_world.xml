@@ -1,10 +1,10 @@
 <document>
 	<stage id="0" name="test_00" description="">
 		<join>
-			<north>1</north>
+			<north dest_id="1"></north>
 		</join>
 		<content>
-			<generic name="obj_01" description="desc"></generic>
+			<item id="0" name="obj_01" description="desc"></item>
 		</content>
 	</stage>
 	<stage id="1" name="test_01" description="">

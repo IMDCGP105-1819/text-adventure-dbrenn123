@@ -10,11 +10,7 @@ def t_props():
 	assert go.description == "Desc"
 
 def t_examine():
-	capturedOutput = io.StringIO()
-	sys.stdout = capturedOutput
-
 	go = GameObject("Test", "Desc")
 	go.examine()
 
-	sys.stdout = sys.__stdout__
-	assert capturedOutput.getvalue() == "Desc\n"
+	assert go.examine() == "Desc"

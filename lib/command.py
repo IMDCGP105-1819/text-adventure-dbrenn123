@@ -21,6 +21,7 @@ class CMD:
 	class Type:
 		ACTION = 0
 		TARGET = 1
+		DIR = 2
 
 	type = Type()
 
@@ -32,7 +33,8 @@ ALIASES = {
 	CMD.DROP: ("DROP"),
 	CMD.COMBINE: ("COMBINE"),
 	"preposition": ("TO", "AT", "AROUND", "IN", "WITHIN", "WITH", "ON", "UNDER"),
-	"article": ("THE")
+	"article": ("THE"),
+	"direction": ("NORTH", "EAST", "SOUTH", "WEST")
 }
 
 class InvalidCommandError(Exception):
@@ -44,9 +46,13 @@ class MissingActionError(InvalidCommandError):
 	pass
 
 class ActionConflictError(InvalidCommandError):
-	""" Raise when command contains multiple actions """
+	""" Raise when command contains multiple actions. """
 	pass
 
+class InvalidDirectionError(InvalidCommandError):
+	""" Raise when player attempts to go where no stage exsists. """
+	pass
+	
 class InvalidTargetError(InvalidCommandError):
 	""" Raise when target item cannot be found """
 	pass
@@ -86,14 +92,18 @@ def _tokenize(cmd_string):
 		for cmd_key, aliases in ALIASES.items():
 			if type(cmd_key) is int:
 				if word in aliases:
-					tokens.append({'type': CMD.type.ACTION, 'cmd': cmd_key})
+					tokens.append({'type': CMD.type.ACTION, 'val': cmd_key})
 					break
 			else:
-				if word in aliases:
+				if cmd_key == "direction":
+					if word in aliases:
+						tokens.append({'type': CMD.type.DIR, 'val': word.lower()})
+						break
+				elif word in aliases:
 					# Ignore prepositions and articles
 					break
 		else:
-			tokens.append({'type': CMD.type.TARGET, 'name': word})
+			tokens.append({'type': CMD.type.TARGET, 'val': word})
 
 	return tokens
 
@@ -106,30 +116,39 @@ def _parse(*tokens):
 	"""
 
 	## Validate action
-	action_count = _token_type_count(CMD.type.ACTION)
+	action_count = _token_type_count(CMD.type.ACTION, tokens)
 
 	# Command must contain only one action, which must be at start.
 	if action_count == 0:
-		raise MissingActionError()
+		raise MissingActionError(f"{tokens}")
 	elif action_count > 1:
 		raise ActionConflictError("Too many actions")
 
 	if tokens[0]['type'] != CMD.type.ACTION:
-		raise InvalidCommandError("Action must come first")
+		raise InvalidCommandError(f"Action must come first: {tokens}")
 
-	cmd = tokens[0]['cmd']
+	cmd = tokens[0]['val']
 
-	## Validate target(s)
+	## Validate target(s).
 	target_count = _token_type_count(CMD.type.TARGET, tokens)
 
 	if target_count == 0:
-		if cmd == CMD.EXAMINE:
-			target = player.get_current_stage()
+		cur_stage = player.get_current_stage()
 
-			return target.examine
+		if cmd == CMD.EXAMINE:
+			return cur_stage.examine
 		elif cmd == CMD.GO:
-			# TODO - implement dir token and directional stage joins
-			NotImplemented
+			# Validate direction.
+			if _token_type_count(CMD.type.DIR, tokens) > 1:
+				raise ActionConflictError("Cannot go in 2 directions at once")
+
+			# Move player to stage in given direction.
+			try:
+				dest_stage_id = cur_stage.get_join_id(tokens[1]['val'])
+			except KeyError:
+				raise InvalidDirectionError()
+
+			return lambda: player.set_stage(dest_stage_id)
 		else:
 			raise Exception(f"Command: {cmd} not implemented.")
 	elif target_count == 1:
@@ -146,7 +165,7 @@ def _parse(*tokens):
 			# TODO - Search inventory for target
 			NotImplemented
 		else:
-			raise Exception(f"Command: {cmd} not implemented.")
+			raise Exception(f"Command: {tokens} not implemented.")
 	elif target_count == 2:
 		if cmd == CMD.USE:
 			# TODO - Search stage and inventory for targets then use first on second
@@ -187,7 +206,7 @@ def _token_type_count(type, tokens):
 	retv = 0
 
 	for token in tokens:
-		if token['type'] == CMD.type.TARGET:
+		if token['type'] == type:
 			retv += 1
 
 	return retv

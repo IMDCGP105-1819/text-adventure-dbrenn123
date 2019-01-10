@@ -1,0 +1,10 @@
+<document>
+	<stage id="0" name="test_00" description="">
+		<join>
+			<north dest_id="1"></north>
+			<east dest_id="1"></east>
+			<south dest_id="1"></south>
+		</join>
+	</stage>
+	<stage id="1" name="test_01" description=""></stage>
+</document>

@@ -1,0 +1,11 @@
+<document>
+	<stage id="0">
+		<content>
+			<item id="0" name="test" description="test"></item>
+			<item id="1" name="test" description="test">
+				<item id="2" name="test" description="test"></item>
+				<item id="3" name="test" description="test"></item>
+			</item>
+		</content>
+	</stage>
+</document>

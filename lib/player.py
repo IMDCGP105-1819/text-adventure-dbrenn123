@@ -42,3 +42,5 @@ def set_stage(id):
 	global _current_stage
 
 	_current_stage = world.load_stage(id)
+
+	return f"You enter the {get_current_stage().name}."

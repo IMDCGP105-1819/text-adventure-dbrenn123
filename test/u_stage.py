@@ -5,25 +5,38 @@ from lib.game_object import GameObject
 from lib.stage import Stage
 
 def t_props():
-	s = Stage("Qwert","Zap", [GameObject("Test_1", "Desc_1"), GameObject("Test_2", "Desc_2"), GameObject("Test_3", "Desc_3")])
+	s = Stage(
+		"Qwert",
+		"Zap",
+		[GameObject("Test_1", "Desc_1"), GameObject("Test_2", "Desc_2"), GameObject("Test_3", "Desc_3")],
+		{"north": {'id': 1, 'name': "test"}}
+	)
 
 	assert s.name == "Qwert"
 	assert s.description == "Zap"
-	assert len(s.objects_list) == 3
+	assert len(s.items_list) == 3
 
 def t_get_object():
 	go = GameObject("Test_2", "Desc_2")
-	s = Stage("Qwert","Zap", [GameObject("Test_1", "Desc_1"), go, GameObject("Test_3", "Desc_3")])
+	s = Stage(
+		"Qwert",
+		"Zap",
+		[GameObject("Test_1", "Desc_1"), go, GameObject("Test_3", "Desc_3")],
+		{"north": {'id': 1, 'name': "test"}}
+	)
 
-	assert s.get_object("Test_2") is go
+	assert s.get_item("Test_2") is go
+
+def t_joins_list():
+	s = Stage("Test Stage", "test", [GameObject("obj", "test")], {"north": {'id': 1, 'name': "test1"}, "south": {'id': 2, 'name': "test2"}})
+
+	assert s.joins_list == (('north', 'test1'), ('south', 'test2'))
+
+def t_get_join_id():
+	s = Stage("Test Stage", "test", [GameObject("obj", "test")], {"north": {'id': 1, 'name': "test"}})
+
+	assert s.get_join_id('north') == 1
 
 def t_examine():
-	capturedOutput = io.StringIO()
-	sys.stdout = capturedOutput
-
-	s = Stage("Test Stage", "test", [GameObject("obj", "test")])
-	s.examine()
-
-	sys.stdout = sys.__stdout__
-
-	assert len(capturedOutput.getvalue()) == 74
+	s = Stage("Test Stage", "test", [GameObject("obj", "test")], {"north": {'id': 1, 'name': "test"}})
+	assert len(s.examine()) == 83

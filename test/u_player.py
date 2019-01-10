@@ -24,6 +24,7 @@ import lib.world as world
 
 @mock.patch('lib.world._get_document', return_value=ElementTree.parse('test/res/test_world.xml').getroot())
 def t_set_stage(mock):
+	player._current_stage = None
 	assert player._current_stage == None
 	player.set_stage(0)
 

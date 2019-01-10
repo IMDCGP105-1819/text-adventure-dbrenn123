@@ -1,11 +1,7 @@
-""" This module provides an interface for importing game locations from data file.
-
-TODO:
- - Refactor stage loading
- - Item data. Have items in seperate data file?
- """
+""" This module provides an interface for importing game locations from data file. """
 
 from xml.etree import ElementTree
+
 from lib.stage import Stage
 from lib.game_item import GameItem, Door
 
@@ -17,32 +13,74 @@ def _get_document():
 
 	try:
 		return ElementTree.parse('res/world.xml').getroot()
-	except ElementTree.ParseError as e:
-		raise Exception("Parse Error: Check res/world.xml for unclosed tags")
 	except Exception as e:
 		raise e
 
 def load_stage(id):
 	""" Load stage data by ID
 
+	Paremeters
+		id (integer):
+			ID used to read stage info from data file.
+
 	Return (lib.stage.Stage)
 	"""
 
-	elem = _get_document().find(f"stage[@id='{id}']")
-	name = elem.attrib['name']
-	description = elem.attrib['description']
+	stage_element = _get_document().find(f"stage[@id='{id}']")
+
+	return Stage(*_get_attribs(stage_element, 'name', 'description'), _collect_items(stage_element), _collect_joins(stage_element))
+
+def _get_attribs(element, *attrib_keys):
+	""" Get attribute values from element data
+
+	Parameters
+		element (xml.etree.ElementTree):
+			Document element tree to read from.
+
+		attrib_keys (string)...:
+			Each attribute to return.
+
+	Return (tuple( <string>... )): Tuple of attribute values in same order as args.
+	"""
+
+	attrib_vals = ()
+
+	for key in attrib_keys:
+		attrib_vals += (element.attrib[key],)
+
+	return attrib_vals
+
+def _collect_items(stage_element):
+	""" Get list of items in stage
+
+	Return (list[ lib.game_item.GameItem ])
+	"""
+
 	items = []
 
-	for item in elem.findall("content/*"):
-		item_name = item.attrib['name']
-		item_desc = item.attrib['description']
+	for item in stage_element.findall("content/*"):
+		items.append(GameItem(*_get_attribs(item, 'name', 'description')))
 
-		items.append(GameItem(item_name, item_desc))
+	for door in stage_element.findall("join/door"):
+		items.append(Door(*_get_attribs(door, 'description', 'dest_id')))
 
-	for door in elem.findall("join/door"):
-		door_desc = door.attrib['description']
-		door_stage_id = door.attrib['id']
+	return items
 
-		items.append(Door(door_desc, door_stage_id))
+def _collect_joins(stage_element):
+	""" Get directional stage joins
 
-	return Stage(name, description, items)
+	Return (dict{ direction: dict{name:str, id:int } })
+	"""
+
+	joins = {}
+
+	for join in stage_element.findall("join/*"):
+		tag = join.tag
+
+		if tag != "door":
+			dest_id = int(_get_attribs(join, 'dest_id')[0])
+			dest_name = _get_attribs(_get_document().find(f"stage[@id='{dest_id}']"), 'name')[0]
+
+			joins[tag] = {'id': dest_id, 'name': dest_name}
+
+	return joins

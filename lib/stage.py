@@ -14,10 +14,11 @@ class Stage(GameObject):
 			List of items which can be interacted with.
 	"""
 
-	def __init__(self, name, description, items):
+	def __init__(self, name, description, items, joins):
 		super().__init__(name, description)
 
 		self._items = items
+		self._joins = joins
 
 	@property
 	def items_list(self):
@@ -45,6 +46,18 @@ class Stage(GameObject):
 
 		return False
 
+	@property
+	def joins_list(self):
+		retv = []
+
+		for k, v in self._joins.items():
+			retv.append((k, v['name']))
+
+		return tuple(retv)
+
+	def get_join_id(self, dir_key):
+		return self._joins[dir_key]['id']
+
 	def examine(self):
 		""" Perform examine action and get response string """
 
@@ -53,5 +66,9 @@ class Stage(GameObject):
 		# Return description of stage followed by list of interactable items.
 		return f'''You look around the {self.name}.
 				{super().examine()}
-				You see the following items...
-				{NEW_LINE.join([str(item) for item in self.items_list])}'''
+				You see the following item(s)...
+				{NEW_LINE.join([str(item).capitalize() for item in self.items_list])}
+
+				{NEW_LINE.join([
+					f"To the {dir} you see the {name}" for dir, name in self.joins_list
+				])}'''
