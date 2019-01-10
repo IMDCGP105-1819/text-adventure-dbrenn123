@@ -32,7 +32,7 @@ def set_stage(id):
 	""" Set current stage by stage ID.
 
 	Parameters
-		id (int):
+		id (integer):
 			ID used to load stage data.
 
 	TODO:

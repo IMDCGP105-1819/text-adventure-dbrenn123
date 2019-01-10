@@ -23,7 +23,7 @@ class Door(GameItem):
 	Parameters
 		description (string)
 
-		stage_id (int):
+		stage_id (integer):
 			ID of stage to which this door will lead.
 	"""
 

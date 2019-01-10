@@ -11,7 +11,8 @@ python run.py
 Command syntax is `<action> [<target_object>...]`.
 
 Valid actions include:
-- `look [object]`
+- `examine|look|view [<item>]` 	- Print description of item. Omit item to describe current location and list interactable items.
+- `use|open|interact <item>` 	- Perform action specific to item.
 
 # Testing
 
@@ -25,5 +26,5 @@ pytest-cov
 Run full suite or specify test file path.
 
 ```
-pytest [--cov] [path]
+pytest [--cov] [<path>]
 ```
