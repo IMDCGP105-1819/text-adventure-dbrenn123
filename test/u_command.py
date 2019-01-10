@@ -1,34 +1,61 @@
 import mock
-import lib.command as cmd
+
+from lib.command import CMD, _tokenize, _token_type_count
+
+class TestHelperFunctions:
+	def t_token_type_count(self):
+		assert _token_type_count(CMD.type.TARGET, [{'type': CMD.type.ACTION}, {'type': CMD.type.TARGET}, {'type': CMD.type.TARGET}]) == 2
 
 class TestTokenization:
-	def t_0_target_cmd(self):
-		t = cmd._tokenize("look around")
-		assert len(t) == 2
-		assert t[0]['type'] == "ACTION"
-		assert t[0]['value'] == "LOOK"
+	def t_action(self):
+		for test_str in ("examine", "EXAMINE", "EXAMINE!-@#"):
+			msg = f"Test string: {test_str}"
+			tokens = _tokenize(test_str)
 
-	def t_1_target_cmd(self):
-		t = cmd._tokenize("Look at thing")
-		assert len(t) == 3
-		assert t[0]['type'] == "ACTION"
-		assert t[0]['value'] == "LOOK"
-		assert t[1]['type'] == "PREPOS"
-		assert t[1]['value'] == "LOOK"
-		assert t[2]['type'] == "TARGET"
-		assert t[2]['value'] == "THING"
+			assert len(tokens) == 1, msg
+			assert tokens[0]['type'] == CMD.type.ACTION, msg
+			assert tokens[0]['cmd'] == CMD.EXAMINE, msg
 
-	def t_2_target_cmd(self):
-		t = cmd._tokenize("Combine thing with otherThing")
-		assert len(t) == 4
-		assert t[0]['type'] == "ACTION"
-		assert t[0]['value'] == "COMBINE"
-		assert t[1]['type'] == "TARGET"
-		assert t[1]['value'] == "THING"
-		assert t[3]['type'] == "TARGET"
-		assert t[3]['value'] == "OTHERTHING"
+	def t_action_alias(self):
+		assert _tokenize("look")[0]['cmd'] == CMD.EXAMINE
+
+	def t_action_with_target(self):
+		test_str = "use object"
+		msg = f"Test string: {test_str}"
+		tokens = _tokenize(test_str)
+
+		assert len(tokens) == 2, msg
+		assert tokens[0]['type'] == CMD.type.ACTION, msg
+		assert tokens[0]['cmd'] == CMD.USE, msg
+		assert tokens[1]['type'] == CMD.type.TARGET, msg
+		assert tokens[1]['name'] == "OBJECT", msg
+
+	def t_action_with_two_targets(self):
+		test_str = "combine object1 object2"
+		msg = f"Test string: {test_str}"
+		tokens = _tokenize(test_str)
+
+		assert len(tokens) == 3, msg
+		assert tokens[1]['type'] == tokens[2]['type'] == CMD.type.TARGET, msg
+
+	def t_action_with_many_targets(self):
+		test_str = "drop object1 object2 object3"
+		msg = f"Test string: {test_str}"
+		tokens = _tokenize(test_str)
+
+		assert len(tokens) == 4
+
+	def t_prepos_artic(self):
+		test_str = "look at the thing"
+		msg = f"Test string: {test_str}"
+		tokens = _tokenize(test_str)
+
+		assert len(tokens) == 2
+		assert tokens[0]['type'] == CMD.type.ACTION
+		assert tokens[1]['type'] == CMD.type.TARGET
 
 class TestParse:
 	def t_(self):
-		p = cmd._parse({'type': "ACTION", 'value': "LOOK"})
-		assert p == 123
+		...
+		#p = cmd._parse({'type': "ACTION", 'value': "LOOK"})
+		#assert p == 123
