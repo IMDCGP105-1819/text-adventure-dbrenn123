@@ -24,7 +24,7 @@ class CMD:
 	type = Type()
 
 ALIASES = {
-	CMD.GO: ("GO", "GOTO", "MOVE"),
+	CMD.GO: ("GO", "GOTO", "MOVE", "HEAD"),
 	CMD.EXAMINE: ("EXAMINE", "LOOK", "VIEW"),
 	CMD.USE: ("USE", "OPEN", "INTERACT"),
 	CMD.TAKE: ("TAKE", "PICKUP"),
