@@ -27,6 +27,7 @@ class Stage(GameObject):
 		Return (list[ string ]):
 			A list of item names.
 		"""
+
 		return [item.name for item in self._items]
 
 	def get_item(self, name):
@@ -45,6 +46,25 @@ class Stage(GameObject):
 				return item
 
 		return False
+
+	def add_item(self, item):
+		""" Add item to items list
+
+		Parameters
+			item (lib.game_item.GameItem)
+		"""
+		
+		self._items.append(item)
+
+	def remove_item(self, item):
+		""" Remove item from items list.
+
+		Parameters
+			item (lib.game_item.GameItem):
+				Item to remove from list.
+		"""
+
+		return self._items.remove(item)
 
 	@property
 	def joins_list(self):

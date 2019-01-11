@@ -1,9 +1,7 @@
 """ This module handles player input command parsing.
 
 TODO:
-	- Implement navigation commands
-	- Implement item use/collection/interaction commands
-	- Refactor _parse()
+	- Refactor
 """
 
 import string
@@ -33,8 +31,9 @@ ALIASES = {
 	CMD.DROP: ("DROP"),
 	CMD.COMBINE: ("COMBINE"),
 	"preposition": ("TO", "AT", "AROUND", "IN", "WITHIN", "WITH", "ON", "UNDER"),
-	"article": ("THE"),
-	"direction": ("NORTH", "EAST", "SOUTH", "WEST")
+	"article": ("THE", "MY"),
+	"direction": ("NORTH", "EAST", "SOUTH", "WEST"),
+	"inventory": ("INVENTORY", "INV", "ITEMS", "STUFF")
 }
 
 class InvalidCommandError(Exception):
@@ -45,6 +44,10 @@ class MissingActionError(InvalidCommandError):
 	""" Raise when initial command token is not a valid action. """
 	pass
 
+class MissingTargetError(InvalidCommandError):
+	""" Raise when command that requires target is executed without one """
+	pass
+
 class ActionConflictError(InvalidCommandError):
 	""" Raise when command contains multiple actions. """
 	pass
@@ -52,7 +55,7 @@ class ActionConflictError(InvalidCommandError):
 class InvalidDirectionError(InvalidCommandError):
 	""" Raise when player attempts to go where no stage exsists. """
 	pass
-	
+
 class InvalidTargetError(InvalidCommandError):
 	""" Raise when target item cannot be found """
 	pass
@@ -99,7 +102,7 @@ def _tokenize(cmd_string):
 					if word in aliases:
 						tokens.append({'type': CMD.type.DIR, 'val': word.lower()})
 						break
-				elif word in aliases:
+				elif word in aliases and cmd_key != "inventory":
 					# Ignore prepositions and articles
 					break
 		else:
@@ -128,15 +131,14 @@ def _parse(*tokens):
 		raise InvalidCommandError(f"Action must come first: {tokens}")
 
 	cmd = tokens[0]['val']
+	stage = player.get_current_stage()
 
 	## Validate target(s).
 	target_count = _token_type_count(CMD.type.TARGET, tokens)
 
 	if target_count == 0:
-		cur_stage = player.get_current_stage()
-
 		if cmd == CMD.EXAMINE:
-			return cur_stage.examine
+			return stage.examine
 		elif cmd == CMD.GO:
 			# Validate direction.
 			if _token_type_count(CMD.type.DIR, tokens) > 1:
@@ -144,43 +146,60 @@ def _parse(*tokens):
 
 			# Move player to stage in given direction.
 			try:
-				dest_stage_id = cur_stage.get_join_id(tokens[1]['val'])
+				dest_stage_id = stage.get_join_id(tokens[1]['val'])
 			except KeyError:
 				raise InvalidDirectionError()
 
 			return lambda: player.set_stage(dest_stage_id)
 		else:
-			raise Exception(f"Command: {cmd} not implemented.")
+			raise MissingTargetError()
 	elif target_count == 1:
+		target_name = tokens[1]['val']
+
 		if cmd == CMD.EXAMINE:
-			# TODO - Search stage and inventory for target
-			NotImplemented
+			if target_name in ALIASES['inventory']:
+				return player.get_items_list_str
+			else:
+				item = _search(target_name, stage, player)
+				return item.examine
+
 		elif cmd == CMD.USE:
-			# TODO - Search inventory for item or stage if target is door
-			NotImplemented
+			item = _search(target_name, stage)
+			return item.use
+
 		elif cmd == CMD.TAKE:
-			# TODO - Search stage for target
-			NotImplemented
+			item = _search(target_name, stage)
+			return lambda: player.add_item(item)
+
 		elif cmd == CMD.DROP:
-			# TODO - Search inventory for target
-			NotImplemented
+			# TODO - Fix this.
+			if target_name in [item.name.upper() for item in player._inventory]:
+				item = player.get_item(target_name)
+
+				return lambda: player.drop_item(item)
+			else:
+				raise InvalidTargetError()
 		else:
 			raise Exception(f"Command: {tokens} not implemented.")
 	elif target_count == 2:
 		if cmd == CMD.USE:
 			# TODO - Search stage and inventory for targets then use first on second
 			NotImplemented
+
 		elif cmd == CMD.TAKE:
 			# TODO - Take both from stage
 			NotImplemented
+
 		elif cmd == CMD.DROP:
 			# TODO - drop both from inventory
 			NotImplemented
+
 		elif cmd == CMD.COMBINE:
 			# TODO - Search inventory for items and combine.
 			NotImplemented
+
 		else:
-			raise Exception(f"Command: {cmd} not implemented.")
+			raise Exception(f"Command: {tokens} not implemented.")
 	else:
 		if cmd == CMD.TAKE:
 			# TODO - Take all from stage
@@ -210,3 +229,10 @@ def _token_type_count(type, tokens):
 			retv += 1
 
 	return retv
+
+def _search(target_name, *item_containers):
+	for container in item_containers:
+		if target_name in [name.upper() for name in container.items_list]:
+			return container.get_item(target_name)
+		else:
+			raise InvalidTargetError()

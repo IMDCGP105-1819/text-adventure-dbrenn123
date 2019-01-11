@@ -16,7 +16,7 @@ def t_props():
 	assert s.description == "Zap"
 	assert len(s.items_list) == 3
 
-def t_get_object():
+def t_get_item():
 	go = GameObject("Test_2", "Desc_2")
 	s = Stage(
 		"Qwert",
@@ -26,6 +26,16 @@ def t_get_object():
 	)
 
 	assert s.get_item("Test_2") is go
+
+def t_items_list():
+	s = Stage(
+		"Qwert",
+		"Zap",
+		[GameObject("Test_1", "Desc_1"), GameObject("Test_2", "Desc_2"), GameObject("Test_3", "Desc_3")],
+		{"north": {'id': 1, 'name': "test"}}
+	)
+
+	assert s.items_list == ['Test_1', 'Test_2', 'Test_3']
 
 def t_joins_list():
 	s = Stage("Test Stage", "test", [GameObject("obj", "test")], {"north": {'id': 1, 'name': "test1"}, "south": {'id': 2, 'name': "test2"}})
