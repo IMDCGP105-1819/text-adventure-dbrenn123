@@ -20,6 +20,9 @@
 		</join>
 		<content>
 			<lamp id="0" name="lamp" description="It is a nice lamp."></lamp>
+			<item id="4" name="chandelier" description="The lights are off."></item>
+			<item id="5" name="desk" description="There is nobody there."></item>
+			<item id="6" name="paperclip" description="Could be useful..."></item>
 		</content>
 	</stage>
 	<stage id="1" name="hallway" description="It is a spooky hallway. There is something out of the ordinary.">
@@ -31,25 +34,26 @@
 			<item id="1" name="painting" description="It's too dark to see."></item>
 		</content>
 	</stage>
-	<stage id="2" name="basement" description="">
+	<stage id="2" name="cellar" description="It is dark and damp.">
 		<join>
 			<door id="1" dest_id="1" description="It is a heavy looking wooden door"></door>
 			<door id="2" dest_id="3" description="It is a heavy looking metal door"></door>
 		</join>
 		<content>
+			<item id="7" name="shovel" description="It is rusted."></item>
 		</content>
 	</stage>
-	<stage id="3" name="passage" description="secret">
+	<stage id="3" name="passage-way" description="">
 		<join>
 			<door id="2" dest_id="2" description="It is a heavy looking metal door"></door>
 			<west dest_id="4"></west>
 		</join>
 		<content>
+			<item id="8" name="shoe" description="It is the left one."></item>
 		</content>
 	</stage>
 	<stage id="4" name="outside" description="">
-		<join>
-		</join>
+		<join></join>
 		<content>
 			<item id="2" name="trees" description="The trees sway gently in the wind."></item>
 			<freedom id="3" name="freedom" description=""></freedom>
