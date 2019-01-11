@@ -19,29 +19,29 @@
 			<north dest_id="1"></north>
 		</join>
 		<content>
-			<item id="0" name="lamp" description="It is a nice lamp."></item>
+			<lamp id="0" name="lamp" description="It is a nice lamp."></lamp>
 		</content>
 	</stage>
 	<stage id="1" name="hallway" description="It is a spooky hallway. There is something out of the ordinary.">
 		<join>
-			<door dest_id="2" description="It is a heavy looking wooden door." key_id="123"></door>
+			<door id="1" dest_id="2" description="It is a heavy looking wooden door." key_id="123"></door>
 			<south dest_id="0"></south>
 		</join>
 		<content>
-			<item id="1" name="painting" description="It is too dark to see."></item>
+			<item id="1" name="painting" description="It's too dark to see."></item>
 		</content>
 	</stage>
 	<stage id="2" name="basement" description="">
 		<join>
-			<door dest_id="1" description=""></door>
-			<door dest_id="3" description=""></door>
+			<door id="1" dest_id="1" description="It is a heavy looking wooden door"></door>
+			<door id="2" dest_id="3" description="It is a heavy looking metal door"></door>
 		</join>
 		<content>
 		</content>
 	</stage>
 	<stage id="3" name="passage" description="secret">
 		<join>
-			<door dest_id="2"></door>
+			<door id="2" dest_id="2" description="It is a heavy looking metal door"></door>
 			<west dest_id="4"></west>
 		</join>
 		<content>
@@ -49,9 +49,10 @@
 	</stage>
 	<stage id="4" name="outside" description="">
 		<join>
-			<east dest_id="3"></east>
 		</join>
 		<content>
+			<item id="2" name="trees" description="The trees sway gently in the wind."></item>
+			<freedom id="3" name="freedom" description=""></freedom>
 		</content>
 	</stage>
 </document>
