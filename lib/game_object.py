@@ -2,11 +2,9 @@ class GameObject:
 	""" Abstract game object class
 
 	Parameters
-		name (string):
-			...
+		name (string)
 
-		description (string):
-			...
+		description (string)
 	"""
 
 	def __init__(self, name, description):
@@ -28,3 +26,6 @@ class GameObject:
 		""" Perform examine action and get response string """
 
 		return self.description
+
+	def use(self):
+		return f"This item does nothing."
