@@ -1,0 +1,58 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<!-- Data file containg game stage and item data -->
+<!-- TODO - Add data validation on start or as seperate program -->
+<!-- Structure
+	Stage
+		<stage id={int} name={string} description={string}
+			<join> {<join-object>...} </join>
+			<content> {<item-object>...} </content>
+		</stage>
+	Join Objects - Link stages together.
+		<north|east|south|west dest_id={int}></{direction}> # Destination stage must have corrosponding join-object.
+		<door dest_id={int} description={string} [key_id={int}]></door> # If key_id present, key object will need to be in inventory to use door.
+	Game Items - Items to be interacted with and collected.
+		<item name={string} description={string}> {<item>...} </item> # Items can be nested.
+-->
+<document>
+	<stage id="0" name="atrium" description="There is nothing out of the ordinary.">
+		<join>
+			<north dest_id="1"></north>
+		</join>
+		<content>
+			<lamp id="0" name="lamp" description="It is a nice lamp."></lamp>
+		</content>
+	</stage>
+	<stage id="1" name="hallway" description="It is a spooky hallway. There is something out of the ordinary.">
+		<join>
+			<door id="1" dest_id="2" description="It is a heavy looking wooden door." key_id="123"></door>
+			<south dest_id="0"></south>
+		</join>
+		<content>
+			<item id="1" name="painting" description="It's too dark to see."></item>
+		</content>
+	</stage>
+	<stage id="2" name="basement" description="">
+		<join>
+			<door id="1" dest_id="1" description="It is a heavy looking wooden door"></door>
+			<door id="2" dest_id="3" description="It is a heavy looking metal door"></door>
+		</join>
+		<content>
+		</content>
+	</stage>
+	<stage id="3" name="passage" description="secret">
+		<join>
+			<door id="2" dest_id="2" description="It is a heavy looking metal door"></door>
+			<west dest_id="4"></west>
+		</join>
+		<content>
+		</content>
+	</stage>
+	<stage id="4" name="outside" description="">
+		<join>
+		</join>
+		<content>
+			<item id="2" name="trees" description="The trees sway gently in the wind."></item>
+			<freedom id="3" name="freedom" description=""></freedom>
+		</content>
+	</stage>
+</document>
