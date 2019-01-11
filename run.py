@@ -11,7 +11,7 @@ from shutil import copyfile
 
 import lib.command as command
 import lib.player as player
-from lib.game_item import Freedom as run
+from lib.game_item import Freedom
 
 class _InvalidResponseError(Exception):
 	""" Raise when response from callback is incorrect type """
@@ -24,7 +24,7 @@ def init():
 
 init()
 
-while(run):
+while(Freedom.run):
 	CMD = input(">")
 
 	if(CMD.upper() == "QUIT"):
@@ -60,6 +60,6 @@ while(run):
 
 		except TypeError:
 			raise _InvalidResponseError(f"Invalid response from {callback}. Expected type string. Got type {type(response)}")
-			
+
 		except Exception as e:
 			raise e
